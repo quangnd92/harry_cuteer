@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Harry Cuteer — Khám Phá Vận Mệnh Của Bạn</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            midnight: '#0a0118',
+            'deep-purple': '#1a0533',
+            'royal-purple': '#2d1b69',
+            'mystic-purple': '#4a2c8a',
+            gold: '#d4af37',
+            'gold-light': '#f5d060',
+            'gold-pale': '#fce8a0',
+          },
+          fontFamily: {
+            heading: ['Playfair Display', 'Georgia', 'serif'],
+            body: ['Inter', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ── Smooth scroll ────────────────────────────────────── */
+    html {
+      scroll-behavior: smooth;
+    }
+
+    /* ── Base body ─────────────────────────────────────────── */
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0a0118;
+      color: #e2d9f3;
+      overflow-x: hidden;
+    }
+
+    /* ── Headings font ────────────────────────────────────── */
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Playfair Display', Georgia, serif;
+    }
+
+    /* ── Hero background layers ───────────────────────────── */
+    .hero-bg {
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 20%, rgba(74, 44, 138, 0.45) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 50% at 80% 70%, rgba(45, 27, 105, 0.35) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 15% 80%, rgba(106, 50, 160, 0.2) 0%, transparent 70%),
+        linear-gradient(180deg, #0a0118 0%, #1a0533 40%, #0a0118 100%);
+    }
+
+    /* ── Glassmorphism card ────────────────────────────────── */
+    .glass-card {
+      background: rgba(26, 5, 51, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.12);
+      transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 40px rgba(212, 175, 55, 0.12);
+      border-color: rgba(212, 175, 55, 0.3);
+    }
+
+    /* ── Pricing card special states ──────────────────────── */
+    .pricing-card {
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+    }
+    .pricing-card:hover {
+      transform: translateY(-8px) scale(1.02);
+    }
+    .pricing-card.popular {
+      border: 2px solid rgba(212, 175, 55, 0.5);
+      box-shadow: 0 0 60px rgba(212, 175, 55, 0.12);
+    }
+
+    /* ── Gold gradient text ────────────────────────────────── */
+    .text-gradient-gold {
+      background: linear-gradient(135deg, #d4af37 0%, #f5d060 50%, #d4af37 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── CTA button glow ──────────────────────────────────── */
+    .btn-glow {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .btn-glow::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(135deg, #d4af37, #f5d060, #d4af37);
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .btn-glow:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(212, 175, 55, 0.35);
+    }
+    .btn-glow:hover::before {
+      opacity: 1;
+    }
+
+    /* ── Shimmer sweep on CTA buttons ─────────────────────── */
+    .btn-shimmer::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        120deg,
+        transparent 30%,
+        rgba(255, 255, 255, 0.15) 50%,
+        transparent 70%
+      );
+      transition: left 0.6s ease;
+    }
+    .btn-shimmer:hover::after {
+      left: 100%;
+    }
+
+    /* ── Scroll-triggered fade-in ──────────────────────────── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.15s; }
+    .reveal-delay-2 { transition-delay: 0.3s; }
+    .reveal-delay-3 { transition-delay: 0.45s; }
+
+    /* ── CSS-only floating stars / particles in hero ───────── */
+    .stars-container {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .star {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(245, 208, 96, 0.7);
+      animation: float-star linear infinite;
+    }
+    @keyframes float-star {
+      0%   { transform: translateY(0) scale(1);   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: translateY(-100vh) scale(0.3); opacity: 0; }
+    }
+
+    /* Generate 20 stars with varied sizes / positions / durations */
+    .star:nth-child(1)  { width: 2px; height: 2px; left:  5%; bottom: -5%; animation-duration: 12s; animation-delay: 0s;   }
+    .star:nth-child(2)  { width: 3px; height: 3px; left: 12%; bottom: -5%; animation-duration: 14s; animation-delay: 1.2s; }
+    .star:nth-child(3)  { width: 2px; height: 2px; left: 20%; bottom: -5%; animation-duration: 10s; animation-delay: 0.5s; }
+    .star:nth-child(4)  { width: 4px; height: 4px; left: 28%; bottom: -5%; animation-duration: 16s; animation-delay: 2s;   }
+    .star:nth-child(5)  { width: 2px; height: 2px; left: 35%; bottom: -5%; animation-duration: 11s; animation-delay: 3.5s; }
+    .star:nth-child(6)  { width: 3px; height: 3px; left: 42%; bottom: -5%; animation-duration: 13s; animation-delay: 0.8s; }
+    .star:nth-child(7)  { width: 2px; height: 2px; left: 50%; bottom: -5%; animation-duration: 15s; animation-delay: 4s;   }
+    .star:nth-child(8)  { width: 3px; height: 3px; left: 58%; bottom: -5%; animation-duration: 12s; animation-delay: 1.5s; }
+    .star:nth-child(9)  { width: 2px; height: 2px; left: 65%; bottom: -5%; animation-duration: 14s; animation-delay: 2.8s; }
+    .star:nth-child(10) { width: 4px; height: 4px; left: 72%; bottom: -5%; animation-duration: 16s; animation-delay: 0.3s; }
+    .star:nth-child(11) { width: 2px; height: 2px; left: 78%; bottom: -5%; animation-duration: 10s; animation-delay: 5s;   }
+    .star:nth-child(12) { width: 3px; height: 3px; left: 85%; bottom: -5%; animation-duration: 13s; animation-delay: 1s;   }
+    .star:nth-child(13) { width: 2px; height: 2px; left: 92%; bottom: -5%; animation-duration: 11s; animation-delay: 3s;   }
+    .star:nth-child(14) { width: 3px; height: 3px; left:  8%; bottom: -5%; animation-duration: 15s; animation-delay: 6s;   }
+    .star:nth-child(15) { width: 2px; height: 2px; left: 17%; bottom: -5%; animation-duration: 12s; animation-delay: 4.5s; }
+    .star:nth-child(16) { width: 4px; height: 4px; left: 33%; bottom: -5%; animation-duration: 14s; animation-delay: 7s;   }
+    .star:nth-child(17) { width: 2px; height: 2px; left: 47%; bottom: -5%; animation-duration: 10s; animation-delay: 2.2s; }
+    .star:nth-child(18) { width: 3px; height: 3px; left: 55%; bottom: -5%; animation-duration: 16s; animation-delay: 5.5s; }
+    .star:nth-child(19) { width: 2px; height: 2px; left: 70%; bottom: -5%; animation-duration: 11s; animation-delay: 1.8s; }
+    .star:nth-child(20) { width: 3px; height: 3px; left: 88%; bottom: -5%; animation-duration: 13s; animation-delay: 3.2s; }
+
+    /* ── Floating decorative elements ──────────────────────── */
+    .float-slow  { animation: float-y 6s ease-in-out infinite; }
+    .float-med   { animation: float-y 4s ease-in-out infinite; }
+    .float-fast  { animation: float-y 3s ease-in-out infinite; }
+    @keyframes float-y {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-18px); }
+    }
+
+    .spin-slow { animation: spin-slow 20s linear infinite; }
+    @keyframes spin-slow {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ── Decorative divider line ───────────────────────────── */
+    .gold-divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+    }
+
+    /* ── Star rating glow ─────────────────────────────────── */
+    .star-rating {
+      color: #f5d060;
+      text-shadow: 0 0 8px rgba(245, 208, 96, 0.4);
+    }
+
+    /* ── Navbar solid state ───────────────────────────────── */
+    .nav-solid {
+      background: rgba(10, 1, 24, 0.92) !important;
+      backdrop-filter: blur(12px) !important;
+      -webkit-backdrop-filter: blur(12px) !important;
+      box-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    /* ── Scrollbar styling ────────────────────────────────── */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a0118; }
+    ::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #2d1b69, #4a2c8a);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover { background: #6a32a0; }
+
+    /* ── Testimonial card quote marks ─────────────────────── */
+    .testimonial-card::before {
+      content: '"';
+      position: absolute;
+      top: -8px;
+      left: 16px;
+      font-size: 80px;
+      font-family: 'Playfair Display', serif;
+      color: rgba(212, 175, 55, 0.12);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    /* ── Pulse ring on popular badge ──────────────────────── */
+    @keyframes pulse-ring {
+      0%   { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+      70%  { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+    }
+    .pulse-badge {
+      animation: pulse-ring 2s ease-out infinite;
+    }
+
+    /* ── Mobile menu overlay ──────────────────────────────── */
+    .mobile-menu {
+      transform: translateX(100%);
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mobile-menu.open {
+      transform: translateX(0);
+    }
+  </style>
+</head>
+
+<body class="antialiased">
+
+  <!-- ═══════════════════════════════════════════════════════
+       HEADER / NAVIGATION
+  ═══════════════════════════════════════════════════════ -->
+  <header id="navbar"
+    class="fixed top-0 left-0 w-full z-50 transition-all duration-500"
+    style="background: transparent;"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 sm:h-20">
+
+        <!-- Logo -->
+        <a href="#" class="flex items-center gap-2 group">
+          <span class="text-2xl sm:text-3xl">🔮</span>
+          <span class="font-heading text-xl sm:text-2xl font-bold text-gradient-gold tracking-wide">
+            Harry Cuteer
+          </span>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center gap-8">
+          <a href="#services" class="text-sm font-medium text-gray-300 hover:text-gold transition-colors duration-300">
+            Dịch vụ
+          </a>
+          <a href="#packages" class="text-sm font-medium text-gray-300 hover:text-gold transition-colors duration-300">
+            Bảng giá
+          </a>
+          <a href="#testimonials" class="text-sm font-medium text-gray-300 hover:text-gold transition-colors duration-300">
+            Đánh giá
+          </a>
+          <a href="#contact" class="text-sm font-medium text-gray-300 hover:text-gold transition-colors duration-300">
+            Liên hệ
+          </a>
+          <a href="#packages"
+            class="ml-2 px-5 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-gold to-gold-light text-deep-purple hover:shadow-lg hover:shadow-gold/20 transition-all duration-300"
+          >
+            Đặt lịch ngay
+          </a>
+        </nav>
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="md:hidden p-2 text-gray-300 hover:text-gold transition-colors" aria-label="Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="mobile-menu fixed top-0 right-0 w-72 h-full bg-midnight/98 backdrop-blur-xl border-l border-gold/10 md:hidden">
+      <div class="flex justify-end p-5">
+        <button id="mobile-menu-close" class="text-gray-300 hover:text-gold transition-colors" aria-label="Close">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-6 px-8 mt-4">
+        <a href="#services" class="mobile-link text-lg font-medium text-gray-300 hover:text-gold transition-colors">Dịch vụ</a>
+        <a href="#packages" class="mobile-link text-lg font-medium text-gray-300 hover:text-gold transition-colors">Bảng giá</a>
+        <a href="#testimonials" class="mobile-link text-lg font-medium text-gray-300 hover:text-gold transition-colors">Đánh giá</a>
+        <a href="#contact" class="mobile-link text-lg font-medium text-gray-300 hover:text-gold transition-colors">Liên hệ</a>
+        <div class="gold-divider mt-2"></div>
+        <a href="#packages"
+          class="mobile-link inline-block text-center px-6 py-3 rounded-full text-sm font-semibold bg-gradient-to-r from-gold to-gold-light text-deep-purple"
+        >
+          Đặt lịch ngay
+        </a>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       HERO SECTION
+  ═══════════════════════════════════════════════════════ -->
+  <section class="hero-bg relative min-h-screen flex items-center justify-center pt-20">
+
+    <!-- Floating star particles -->
+    <div class="stars-container">
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div><div class="star"></div>
+      <div class="star"></div><div class="star"></div>
+    </div>
+
+    <!-- Decorative floating elements -->
+    <div class="absolute top-[15%] left-[8%] text-4xl sm:text-5xl opacity-20 float-slow select-none pointer-events-none">🌙</div>
+    <div class="absolute top-[25%] right-[10%] text-3xl sm:text-4xl opacity-15 float-med select-none pointer-events-none">✨</div>
+    <div class="absolute bottom-[20%] left-[15%] text-2xl sm:text-3xl opacity-15 float-fast select-none pointer-events-none">⭐</div>
+    <div class="absolute bottom-[30%] right-[12%] text-5xl sm:text-6xl opacity-10 spin-slow select-none pointer-events-none">☀</div>
+    <div class="absolute top-[60%] left-[5%] text-2xl opacity-10 float-med select-none pointer-events-none">🌟</div>
+    <div class="absolute top-[10%] right-[30%] text-xl opacity-10 float-slow select-none pointer-events-none">💫</div>
+
+    <!-- Hero content -->
+    <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+
+      <!-- Decorative top ornament -->
+      <div class="flex justify-center mb-6 reveal">
+        <span class="text-5xl sm:text-6xl">🔮</span>
+      </div>
+
+      <!-- Main heading -->
+      <h1 class="reveal font-heading text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+        <span class="text-gradient-gold">Khám Phá</span><br />
+        <span class="text-white">Vận Mệnh Của Bạn</span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="reveal reveal-delay-1 text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-4 leading-relaxed">
+        Hành trình khai mở tiềm thức qua từng lá bài Tarot.
+        Để những thông điệp từ vũ trụ dẫn lối bạn tìm thấy câu trả lời cho cuộc sống.
+      </p>
+
+      <!-- Trust line -->
+      <p class="reveal reveal-delay-2 text-sm text-gold/70 mb-10 font-medium tracking-wide uppercase">
+        ✦ Hơn 2,000+ khách hàng tin tưởng ✦
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="reveal reveal-delay-3 flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="#packages"
+          class="btn-glow btn-shimmer relative inline-flex items-center justify-center px-8 py-4 rounded-full text-base font-bold bg-gradient-to-r from-gold to-gold-light text-deep-purple shadow-lg shadow-gold/20"
+        >
+          Xem bảng giá
+          <span class="ml-2">→</span>
+        </a>
+        <a href="#services"
+          class="inline-flex items-center justify-center px-8 py-4 rounded-full text-base font-medium border border-gold/30 text-gold hover:bg-gold/10 transition-all duration-300"
+        >
+          Tìm hiểu thêm
+        </a>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-50">
+      <span class="text-xs text-gray-400 tracking-widest uppercase">Cuộn xuống</span>
+      <div class="w-5 h-8 border border-gray-500 rounded-full flex justify-center pt-1.5">
+        <div class="w-1 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       ABOUT / SERVICES SECTION
+  ═══════════════════════════════════════════════════════ -->
+  <section id="services" class="relative py-20 sm:py-28 bg-midnight">
+    <!-- Subtle top gradient -->
+    <div class="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-deep-purple/30 to-transparent"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section heading -->
+      <div class="text-center mb-16 sm:mb-20">
+        <p class="reveal text-gold text-sm font-semibold tracking-[0.2em] uppercase mb-3">Về chúng tôi</p>
+        <h2 class="reveal font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+          Tại sao chọn <span class="text-gradient-gold">Harry Cuteer</span>?
+        </h2>
+        <div class="reveal mx-auto w-24 gold-divider mb-6"></div>
+        <p class="reveal text-gray-400 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
+          Với nhiều năm kinh nghiệm trong lĩnh vực Tarot, chúng tôi mang đến cho bạn
+          những trải nghiệm đọc bài chính xác, sâu sắc và hoàn toàn bảo mật.
+        </p>
+      </div>
+
+      <!-- Feature Cards Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+
+        <!-- Card 1 -->
+        <div class="reveal glass-card rounded-2xl p-6 sm:p-8 text-center group">
+          <div class="text-4xl sm:text-5xl mb-5 group-hover:scale-110 transition-transform duration-300">🃏</div>
+          <h3 class="font-heading text-lg sm:text-xl font-semibold text-white mb-3">Trải bài chính xác</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Phân tích sâu từng lá bài, mang đến thông điệp rõ ràng và đúng trọng tâm cho câu hỏi của bạn.
+          </p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="reveal reveal-delay-1 glass-card rounded-2xl p-6 sm:p-8 text-center group">
+          <div class="text-4xl sm:text-5xl mb-5 group-hover:scale-110 transition-transform duration-300">💜</div>
+          <h3 class="font-heading text-lg sm:text-xl font-semibold text-white mb-3">Tư vấn tận tâm</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Luôn lắng nghe và thấu hiểu. Mỗi buổi đọc bài là một cuộc trò chuyện chân thành và đầy cảm hứng.
+          </p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="reveal reveal-delay-2 glass-card rounded-2xl p-6 sm:p-8 text-center group">
+          <div class="text-4xl sm:text-5xl mb-5 group-hover:scale-110 transition-transform duration-300">🔒</div>
+          <h3 class="font-heading text-lg sm:text-xl font-semibold text-white mb-3">Bảo mật thông tin</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Mọi thông tin cá nhân và nội dung buổi đọc bài của bạn được bảo mật tuyệt đối 100%.
+          </p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="reveal reveal-delay-3 glass-card rounded-2xl p-6 sm:p-8 text-center group">
+          <div class="text-4xl sm:text-5xl mb-5 group-hover:scale-110 transition-transform duration-300">⚡</div>
+          <h3 class="font-heading text-lg sm:text-xl font-semibold text-white mb-3">Phản hồi nhanh</h3>
+          <p class="text-gray-400 text-sm leading-relaxed">
+            Nhận kết quả đọc bài nhanh chóng. Hỗ trợ giải đáp thắc mắc mọi lúc qua Telegram.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       PACKAGES / PRICING SECTION
+  ═══════════════════════════════════════════════════════ -->
+  <section id="packages" class="relative py-20 sm:py-28 overflow-hidden">
+    <!-- Background accent -->
+    <div class="absolute inset-0 bg-gradient-to-b from-midnight via-deep-purple/40 to-midnight"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-royal-purple/15 blur-[120px] pointer-events-none"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section heading -->
+      <div class="text-center mb-16 sm:mb-20">
+        <p class="reveal text-gold text-sm font-semibold tracking-[0.2em] uppercase mb-3">Bảng giá</p>
+        <h2 class="reveal font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+          Chọn gói <span class="text-gradient-gold">phù hợp</span> với bạn
+        </h2>
+        <div class="reveal mx-auto w-24 gold-divider mb-6"></div>
+        <p class="reveal text-gray-400 max-w-xl mx-auto text-base sm:text-lg">
+          Ba gói dịch vụ được thiết kế cho mọi nhu cầu, từ đọc bài nhanh đến tư vấn chuyên sâu.
+        </p>
+      </div>
+
+      <!-- Pricing Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 max-w-5xl mx-auto items-stretch">
+
+        <!-- ── Ánh Trăng ──────────────────────────────────── -->
+        <div class="reveal pricing-card glass-card rounded-3xl p-8 flex flex-col">
+          <div class="text-center mb-6">
+            <span class="text-4xl mb-3 block">🌙</span>
+            <h3 class="font-heading text-2xl font-bold text-white mb-1">Ánh Trăng</h3>
+            <p class="text-sm text-gray-400">Khám phá nhanh</p>
+          </div>
+          <div class="text-center mb-8">
+            <span class="font-heading text-4xl sm:text-5xl font-bold text-gradient-gold">99,000</span>
+            <span class="text-gold/70 text-lg">đ</span>
+          </div>
+          <ul class="space-y-4 mb-10 flex-1">
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Trải bài 3 lá cơ bản
+            </li>
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Tập trung 1 vấn đề
+            </li>
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Trả kết quả trong 24 giờ
+            </li>
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Giải bài bằng văn bản
+            </li>
+          </ul>
+          <a href="form.html?package=anh-trang"
+            class="block text-center px-6 py-3.5 rounded-full text-sm font-semibold border border-gold/40 text-gold hover:bg-gold/10 transition-all duration-300"
+          >
+            Chọn gói này
+          </a>
+        </div>
+
+        <!-- ── Ngôi Sao (POPULAR) ─────────────────────────── -->
+        <div class="reveal reveal-delay-1 pricing-card popular glass-card rounded-3xl p-8 flex flex-col relative">
+          <!-- Popular badge -->
+          <div class="absolute -top-4 left-1/2 -translate-x-1/2">
+            <span class="pulse-badge inline-block px-5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-gradient-to-r from-gold to-gold-light text-deep-purple shadow-lg">
+              Phổ biến nhất
+            </span>
+          </div>
+          <div class="text-center mb-6 mt-2">
+            <span class="text-4xl mb-3 block">⭐</span>
+            <h3 class="font-heading text-2xl font-bold text-white mb-1">Ngôi Sao</h3>
+            <p class="text-sm text-gray-400">Phân tích chuyên sâu</p>
+          </div>
+          <div class="text-center mb-8">
+            <span class="font-heading text-4xl sm:text-5xl font-bold text-gradient-gold">199,000</span>
+            <span class="text-gold/70 text-lg">đ</span>
+          </div>
+          <ul class="space-y-4 mb-10 flex-1">
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Trải bài Celtic Cross 10 lá
+            </li>
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Hỗ trợ 1–2 vấn đề
+            </li>
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Trả kết quả trong 12 giờ
+            </li>
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Tư vấn chi tiết kèm lời khuyên
+            </li>
+          </ul>
+          <a href="form.html?package=ngoi-sao"
+            class="btn-glow btn-shimmer relative block text-center px-6 py-3.5 rounded-full text-sm font-bold bg-gradient-to-r from-gold to-gold-light text-deep-purple shadow-lg shadow-gold/20"
+          >
+            Chọn gói này
+          </a>
+        </div>
+
+        <!-- ── Thần Bí ────────────────────────────────────── -->
+        <div class="reveal reveal-delay-2 pricing-card glass-card rounded-3xl p-8 flex flex-col">
+          <div class="text-center mb-6">
+            <span class="text-4xl mb-3 block">🔮</span>
+            <h3 class="font-heading text-2xl font-bold text-white mb-1">Thần Bí</h3>
+            <p class="text-sm text-gray-400">Trải nghiệm VIP</p>
+          </div>
+          <div class="text-center mb-8">
+            <span class="font-heading text-4xl sm:text-5xl font-bold text-gradient-gold">399,000</span>
+            <span class="text-gold/70 text-lg">đ</span>
+          </div>
+          <ul class="space-y-4 mb-10 flex-1">
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Không giới hạn câu hỏi
+            </li>
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Trải bài tùy chọn linh hoạt
+            </li>
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Trả kết quả trong 6 giờ
+            </li>
+            <li class="flex items-start gap-3 text-gray-300 text-sm">
+              <span class="text-gold mt-0.5">✦</span> Tư vấn sâu + Follow-up miễn phí
+            </li>
+          </ul>
+          <a href="form.html?package=than-bi"
+            class="block text-center px-6 py-3.5 rounded-full text-sm font-semibold border border-gold/40 text-gold hover:bg-gold/10 transition-all duration-300"
+          >
+            Chọn gói này
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       TESTIMONIALS SECTION
+  ═══════════════════════════════════════════════════════ -->
+  <section id="testimonials" class="relative py-20 sm:py-28 bg-midnight">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Section heading -->
+      <div class="text-center mb-16 sm:mb-20">
+        <p class="reveal text-gold text-sm font-semibold tracking-[0.2em] uppercase mb-3">Đánh giá</p>
+        <h2 class="reveal font-heading text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-6">
+          Khách hàng <span class="text-gradient-gold">nói gì</span>?
+        </h2>
+        <div class="reveal mx-auto w-24 gold-divider"></div>
+      </div>
+
+      <!-- Testimonial Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+
+        <!-- Testimonial 1 -->
+        <div class="reveal testimonial-card glass-card rounded-2xl p-8 relative">
+          <div class="star-rating text-lg mb-4">★★★★★</div>
+          <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+            "Mình rất bất ngờ vì bài đọc chính xác đến kinh ngạc! Reader hiểu rõ vấn đề mình đang gặp phải và đưa ra lời khuyên rất hữu ích. Chắc chắn sẽ quay lại."
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-royal-purple to-mystic-purple flex items-center justify-center text-sm font-bold text-white">TL</div>
+            <div>
+              <p class="text-white text-sm font-semibold">Thanh Lan</p>
+              <p class="text-gray-500 text-xs">Gói Ngôi Sao</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div class="reveal reveal-delay-1 testimonial-card glass-card rounded-2xl p-8 relative">
+          <div class="star-rating text-lg mb-4">★★★★★</div>
+          <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+            "Lần đầu tiên trải nghiệm đọc bài Tarot online mà mình cảm thấy rất an tâm. Thông tin được bảo mật tốt, kết quả trả nhanh, phân tích rõ ràng và dễ hiểu."
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-gold/60 to-gold-light/60 flex items-center justify-center text-sm font-bold text-deep-purple">MH</div>
+            <div>
+              <p class="text-white text-sm font-semibold">Minh Hằng</p>
+              <p class="text-gray-500 text-xs">Gói Thần Bí</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div class="reveal reveal-delay-2 testimonial-card glass-card rounded-2xl p-8 relative">
+          <div class="star-rating text-lg mb-4">★★★★★</div>
+          <p class="text-gray-300 text-sm leading-relaxed mb-6 italic">
+            "Ban đầu mình chỉ thử gói Ánh Trăng cho vui, nhưng kết quả quá tốt nên tuần sau đã quay lại đặt gói Ngôi Sao luôn. Reader rất tận tâm và chu đáo!"
+          </p>
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-mystic-purple to-royal-purple flex items-center justify-center text-sm font-bold text-white">ĐK</div>
+            <div>
+              <p class="text-white text-sm font-semibold">Đức Khang</p>
+              <p class="text-gray-500 text-xs">Gói Ánh Trăng → Ngôi Sao</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       CTA BANNER
+  ═══════════════════════════════════════════════════════ -->
+  <section class="relative py-20 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-r from-royal-purple/40 via-deep-purple to-royal-purple/40"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(212,175,55,0.06)_0%,transparent_70%)]"></div>
+
+    <div class="relative max-w-3xl mx-auto px-4 text-center">
+      <div class="reveal">
+        <span class="text-5xl mb-6 block">✨</span>
+        <h2 class="font-heading text-3xl sm:text-4xl font-bold text-white mb-4">
+          Sẵn sàng khám phá vận mệnh?
+        </h2>
+        <p class="text-gray-300 mb-8 max-w-lg mx-auto">
+          Đặt lịch đọc bài ngay hôm nay và nhận những thông điệp quý giá từ vũ trụ dành riêng cho bạn.
+        </p>
+        <a href="#packages"
+          class="btn-glow btn-shimmer relative inline-flex items-center justify-center px-10 py-4 rounded-full text-base font-bold bg-gradient-to-r from-gold to-gold-light text-deep-purple shadow-lg shadow-gold/20"
+        >
+          Chọn gói & đặt lịch
+          <span class="ml-2">→</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       FOOTER
+  ═══════════════════════════════════════════════════════ -->
+  <footer id="contact" class="bg-midnight border-t border-white/5 pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12">
+
+        <!-- Brand -->
+        <div>
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-2xl">🔮</span>
+            <span class="font-heading text-xl font-bold text-gradient-gold">Harry Cuteer</span>
+          </div>
+          <p class="text-gray-400 text-sm leading-relaxed max-w-xs">
+            Dịch vụ đọc bài Tarot trực tuyến uy tín. Khai mở tiềm thức, khám phá vận mệnh qua từng lá bài.
+          </p>
+        </div>
+
+        <!-- Quick Links -->
+        <div>
+          <h4 class="font-heading text-lg font-semibold text-white mb-4">Liên kết nhanh</h4>
+          <ul class="space-y-3">
+            <li><a href="#services" class="text-gray-400 text-sm hover:text-gold transition-colors">Dịch vụ</a></li>
+            <li><a href="#packages" class="text-gray-400 text-sm hover:text-gold transition-colors">Bảng giá</a></li>
+            <li><a href="#testimonials" class="text-gray-400 text-sm hover:text-gold transition-colors">Đánh giá</a></li>
+          </ul>
+        </div>
+
+        <!-- Contact -->
+        <div>
+          <h4 class="font-heading text-lg font-semibold text-white mb-4">Liên hệ</h4>
+          <ul class="space-y-3">
+            <li>
+              <a href="https://t.me/harrycuteer" target="_blank" rel="noopener"
+                class="flex items-center gap-3 text-gray-400 text-sm hover:text-gold transition-colors"
+              >
+                <span class="text-lg">✈️</span> Telegram: @harrycuteer
+              </a>
+            </li>
+            <li>
+              <a href="https://instagram.com/harrycuteer" target="_blank" rel="noopener"
+                class="flex items-center gap-3 text-gray-400 text-sm hover:text-gold transition-colors"
+              >
+                <span class="text-lg">📸</span> Instagram: @harrycuteer
+              </a>
+            </li>
+            <li>
+              <a href="https://facebook.com/harrycuteer" target="_blank" rel="noopener"
+                class="flex items-center gap-3 text-gray-400 text-sm hover:text-gold transition-colors"
+              >
+                <span class="text-lg">👤</span> Facebook: Harry Cuteer
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="gold-divider mb-8"></div>
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-gray-500 text-xs">© 2024 Harry Cuteer. Tất cả quyền được bảo lưu.</p>
+        <p class="text-gray-600 text-xs">Made with ✨ & 🔮</p>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ═══════════════════════════════════════════════════════
+       SCRIPTS
+  ═══════════════════════════════════════════════════════ -->
+  <script>
+    (() => {
+      'use strict';
+
+      /* ── Navbar: transparent → solid on scroll ───────── */
+      const navbar = document.getElementById('navbar');
+      const onScroll = () => {
+        if (window.scrollY > 60) {
+          navbar.classList.add('nav-solid');
+        } else {
+          navbar.classList.remove('nav-solid');
+        }
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll(); // initial check
+
+      /* ── Mobile menu toggle ──────────────────────────── */
+      const mobileMenu = document.getElementById('mobile-menu');
+      const openBtn = document.getElementById('mobile-menu-btn');
+      const closeBtn = document.getElementById('mobile-menu-close');
+
+      openBtn.addEventListener('click', () => mobileMenu.classList.add('open'));
+      closeBtn.addEventListener('click', () => mobileMenu.classList.remove('open'));
+
+      // Close mobile menu when clicking a nav link
+      document.querySelectorAll('.mobile-link').forEach((link) => {
+        link.addEventListener('click', () => mobileMenu.classList.remove('open'));
+      });
+
+      /* ── Scroll-triggered reveal animations ──────────── */
+      const revealElements = document.querySelectorAll('.reveal');
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target); // only animate once
+            }
+          });
+        },
+        {
+          threshold: 0.12,
+          rootMargin: '0px 0px -40px 0px',
+        }
+      );
+      revealElements.forEach((el) => observer.observe(el));
+
+      /* ── Active nav link highlight on scroll ─────────── */
+      const sections = document.querySelectorAll('section[id]');
+      const navLinks = document.querySelectorAll('header nav a[href^="#"]');
+      const highlightNav = () => {
+        const scrollY = window.scrollY + 120;
+        sections.forEach((section) => {
+          const top = section.offsetTop;
+          const height = section.offsetHeight;
+          const id = section.getAttribute('id');
+          if (scrollY >= top && scrollY < top + height) {
+            navLinks.forEach((link) => {
+              link.classList.remove('text-gold');
+              link.classList.add('text-gray-300');
+              if (link.getAttribute('href') === `#${id}`) {
+                link.classList.add('text-gold');
+                link.classList.remove('text-gray-300');
+              }
+            });
+          }
+        });
+      };
+      window.addEventListener('scroll', highlightNav, { passive: true });
+    })();
+  </script>
+</body>
+</html>

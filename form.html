@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Đặt Lịch Xem Tarot | Harry Cuteer</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            purple: {
+              950: '#1a0533',
+              900: '#2d1b69',
+              800: '#3d2b7a',
+              700: '#4e3b8b',
+            },
+            gold: {
+              DEFAULT: '#d4af37',
+              light: '#f5d060',
+              dark: '#b8960c',
+            },
+          },
+          fontFamily: {
+            heading: ['"Playfair Display"', 'serif'],
+            body: ['"Inter"', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* ── Base ───────────────────────────────────────────── */
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #1a0533;
+      color: #e8e0f0;
+    }
+
+    /* ── Custom scrollbar ──────────────────────────────── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #1a0533; }
+    ::-webkit-scrollbar-thumb { background: #4e3b8b; border-radius: 3px; }
+
+    /* ── Glassmorphism card ─────────────────────────────── */
+    .glass-card {
+      background: rgba(45, 27, 105, 0.45);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(212, 175, 55, 0.15);
+    }
+
+    /* ── Form input base styles ────────────────────────── */
+    .form-input {
+      background: rgba(26, 5, 51, 0.6);
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      color: #e8e0f0;
+      transition: all 0.3s ease;
+    }
+    .form-input::placeholder { color: rgba(232, 224, 240, 0.4); }
+    .form-input:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15), 0 0 20px rgba(212, 175, 55, 0.08);
+    }
+
+    /* ── Error state ───────────────────────────────────── */
+    .form-input.input-error {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+      animation: shake 0.4s ease;
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-4px); }
+      40%, 80% { transform: translateX(4px); }
+    }
+
+    /* ── Radio button custom style ─────────────────────── */
+    .radio-option input[type="radio"] { display: none; }
+    .radio-option .radio-label {
+      cursor: pointer;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      transition: all 0.3s ease;
+    }
+    .radio-option input[type="radio"]:checked + .radio-label {
+      border-color: #d4af37;
+      background: rgba(212, 175, 55, 0.12);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
+    }
+    .radio-option input[type="radio"]:checked + .radio-label .radio-dot {
+      background: #d4af37;
+      box-shadow: 0 0 6px rgba(212, 175, 55, 0.5);
+    }
+
+    /* ── Progress bar animation ─────────────────────────── */
+    .step-connector {
+      height: 2px;
+      background: rgba(212, 175, 55, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+    .step-connector.completed::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: #d4af37;
+      animation: fillLine 0.6s ease forwards;
+    }
+    @keyframes fillLine {
+      from { width: 0; }
+      to   { width: 100%; }
+    }
+
+    /* ── Floating sparkle decoration ───────────────────── */
+    .sparkle {
+      position: fixed;
+      width: 3px;
+      height: 3px;
+      background: rgba(212, 175, 55, 0.4);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float 6s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1);   opacity: 0.4; }
+      50%      { transform: translateY(-30px) scale(1.5); opacity: 0.8; }
+    }
+
+    /* ── Fade-in on load ───────────────────────────────── */
+    .fade-in {
+      opacity: 0;
+      transform: translateY(16px);
+      animation: fadeInUp 0.6s ease forwards;
+    }
+    @keyframes fadeInUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Submit button glow ─────────────────────────────── */
+    .btn-glow {
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-glow::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(transparent, rgba(245, 208, 96, 0.15), transparent 30%);
+      animation: rotateGlow 4s linear infinite;
+    }
+    @keyframes rotateGlow {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen">
+  <!-- ══════════════════════════════════════════════════════
+       Decorative sparkles (generated via JS below)
+       ══════════════════════════════════════════════════════ -->
+
+  <!-- ══════════════════════════════════════════════════════
+       HEADER
+       ══════════════════════════════════════════════════════ -->
+  <header class="sticky top-0 z-50 glass-card border-0 border-b border-gold/10">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- Back link -->
+      <a href="index.html"
+         class="flex items-center gap-2 text-gold hover:text-gold-light transition-colors group">
+        <svg class="w-5 h-5 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+        <span class="text-sm font-medium hidden sm:inline">Quay lại</span>
+      </a>
+
+      <!-- Logo -->
+      <a href="index.html" class="font-heading text-xl sm:text-2xl text-gold tracking-wide">
+        ✦ Harry Cuteer
+      </a>
+
+      <!-- Spacer to balance flex -->
+      <div class="w-16"></div>
+    </div>
+  </header>
+
+  <!-- ══════════════════════════════════════════════════════
+       MAIN CONTENT
+       ══════════════════════════════════════════════════════ -->
+  <main class="max-w-2xl mx-auto px-4 py-6 sm:py-10 space-y-8">
+
+    <!-- ── Progress Bar ────────────────────────────────── -->
+    <nav class="fade-in" style="animation-delay: 0.1s" aria-label="Tiến trình đặt lịch">
+      <div class="flex items-center justify-center gap-0">
+        <!-- Step 1 — Completed -->
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-gold flex items-center justify-center text-purple-950 font-bold text-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+          <span class="text-gold text-sm font-medium hidden sm:inline">Chọn gói</span>
+        </div>
+
+        <!-- Connector 1→2 (completed) -->
+        <div class="step-connector completed w-12 sm:w-20 mx-2"></div>
+
+        <!-- Step 2 — Active -->
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full border-2 border-gold bg-gold/10 flex items-center justify-center text-gold font-bold text-sm animate-pulse">
+            2
+          </div>
+          <span class="text-gold text-sm font-semibold hidden sm:inline">Thông tin</span>
+        </div>
+
+        <!-- Connector 2→3 (upcoming) -->
+        <div class="step-connector w-12 sm:w-20 mx-2"></div>
+
+        <!-- Step 3 — Upcoming -->
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full border border-gold/30 flex items-center justify-center text-gold/40 font-bold text-sm">
+            3
+          </div>
+          <span class="text-gold/40 text-sm font-medium hidden sm:inline">Xác nhận</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ── Package Summary Banner ──────────────────────── -->
+    <section id="package-banner" class="fade-in glass-card rounded-2xl p-5 sm:p-6" style="animation-delay: 0.2s">
+      <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+        <!-- Emoji + Name -->
+        <div class="flex items-center gap-3 flex-1">
+          <span id="pkg-emoji" class="text-3xl sm:text-4xl">🌙</span>
+          <div>
+            <p class="text-xs uppercase tracking-widest text-gold/60 mb-1">Gói đã chọn</p>
+            <h2 id="pkg-name" class="font-heading text-xl sm:text-2xl text-gold font-semibold">Ánh Trăng</h2>
+          </div>
+        </div>
+
+        <!-- Price -->
+        <div class="text-right">
+          <p id="pkg-price" class="font-heading text-2xl sm:text-3xl text-gold font-bold">99,000đ</p>
+        </div>
+      </div>
+
+      <!-- Features list -->
+      <ul id="pkg-features" class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-sm text-purple-200">
+        <!-- Populated by JS -->
+      </ul>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════
+         FORM
+         ══════════════════════════════════════════════════ -->
+    <form id="booking-form" class="fade-in space-y-6" style="animation-delay: 0.3s" novalidate>
+
+      <!-- ── Họ và tên ──────────────────────────────────── -->
+      <div class="space-y-1.5">
+        <label for="fullname" class="block text-sm font-medium text-gold/80">
+          Họ và tên <span class="text-red-400">*</span>
+        </label>
+        <input type="text" id="fullname" name="fullname" required
+               placeholder="Nhập họ và tên của bạn"
+               class="form-input w-full rounded-xl px-4 py-3 text-sm" />
+        <p class="error-msg text-red-400 text-xs mt-1 hidden"></p>
+      </div>
+
+      <!-- ── Số điện thoại ──────────────────────────────── -->
+      <div class="space-y-1.5">
+        <label for="phone" class="block text-sm font-medium text-gold/80">
+          Số điện thoại <span class="text-red-400">*</span>
+        </label>
+        <input type="tel" id="phone" name="phone" required
+               placeholder="VD: 0912345678"
+               maxlength="10"
+               class="form-input w-full rounded-xl px-4 py-3 text-sm" />
+        <p class="error-msg text-red-400 text-xs mt-1 hidden"></p>
+      </div>
+
+      <!-- ── Ngày sinh ──────────────────────────────────── -->
+      <div class="space-y-1.5">
+        <label for="dob" class="block text-sm font-medium text-gold/80">
+          Ngày sinh <span class="text-red-400">*</span>
+        </label>
+        <input type="date" id="dob" name="dob" required
+               class="form-input w-full rounded-xl px-4 py-3 text-sm" />
+        <p class="error-msg text-red-400 text-xs mt-1 hidden"></p>
+      </div>
+
+      <!-- ── Giới tính ──────────────────────────────────── -->
+      <fieldset class="space-y-2">
+        <legend class="text-sm font-medium text-gold/80 mb-1">
+          Giới tính <span class="text-red-400">*</span>
+        </legend>
+        <div class="flex flex-wrap gap-3" id="gender-group">
+          <!-- Nam -->
+          <label class="radio-option flex-1 min-w-[90px]">
+            <input type="radio" name="gender" value="Nam" required />
+            <div class="radio-label rounded-xl px-4 py-3 flex items-center justify-center gap-2 text-sm text-center">
+              <span class="radio-dot w-3.5 h-3.5 rounded-full border-2 border-gold/40 transition-all flex-shrink-0"></span>
+              Nam
+            </div>
+          </label>
+          <!-- Nữ -->
+          <label class="radio-option flex-1 min-w-[90px]">
+            <input type="radio" name="gender" value="Nữ" required />
+            <div class="radio-label rounded-xl px-4 py-3 flex items-center justify-center gap-2 text-sm text-center">
+              <span class="radio-dot w-3.5 h-3.5 rounded-full border-2 border-gold/40 transition-all flex-shrink-0"></span>
+              Nữ
+            </div>
+          </label>
+          <!-- Khác -->
+          <label class="radio-option flex-1 min-w-[90px]">
+            <input type="radio" name="gender" value="Khác" required />
+            <div class="radio-label rounded-xl px-4 py-3 flex items-center justify-center gap-2 text-sm text-center">
+              <span class="radio-dot w-3.5 h-3.5 rounded-full border-2 border-gold/40 transition-all flex-shrink-0"></span>
+              Khác
+            </div>
+          </label>
+        </div>
+        <p class="error-msg text-red-400 text-xs mt-1 hidden"></p>
+      </fieldset>
+
+      <!-- ── Vấn đề cần tư vấn ─────────────────────────── -->
+      <div class="space-y-1.5">
+        <label for="topic" class="block text-sm font-medium text-gold/80">
+          Vấn đề cần tư vấn <span class="text-red-400">*</span>
+        </label>
+        <textarea id="topic" name="topic" required rows="3"
+                  placeholder="VD: tình cảm, sự nghiệp, tài chính, sức khỏe, gia đình..."
+                  class="form-input w-full rounded-xl px-4 py-3 text-sm resize-none"></textarea>
+        <p class="error-msg text-red-400 text-xs mt-1 hidden"></p>
+      </div>
+
+      <!-- ── Câu hỏi cụ thể (optional) ─────────────────── -->
+      <div class="space-y-1.5">
+        <label for="detail" class="block text-sm font-medium text-gold/80">
+          Câu hỏi cụ thể <span class="text-gold/40 text-xs">(không bắt buộc)</span>
+        </label>
+        <textarea id="detail" name="detail" rows="3"
+                  placeholder="Mô tả chi tiết vấn đề bạn muốn hỏi..."
+                  class="form-input w-full rounded-xl px-4 py-3 text-sm resize-none"></textarea>
+      </div>
+
+      <!-- ── Phương thức nhận kết quả ───────────────────── -->
+      <div class="space-y-1.5">
+        <label for="contact-method" class="block text-sm font-medium text-gold/80">
+          Phương thức nhận kết quả <span class="text-red-400">*</span>
+        </label>
+        <div class="relative">
+          <select id="contact-method" name="contactMethod" required
+                  class="form-input w-full rounded-xl px-4 py-3 text-sm appearance-none cursor-pointer">
+            <option value="" disabled selected>── Chọn phương thức ──</option>
+            <option value="Zalo">Zalo</option>
+            <option value="Telegram">Telegram</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Facebook Messenger">Facebook Messenger</option>
+          </select>
+          <!-- Dropdown arrow -->
+          <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-4">
+            <svg class="w-4 h-4 text-gold/50" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+            </svg>
+          </div>
+        </div>
+        <p class="error-msg text-red-400 text-xs mt-1 hidden"></p>
+      </div>
+
+      <!-- ── Tài khoản liên lạc ─────────────────────────── -->
+      <div class="space-y-1.5">
+        <label for="contact-account" class="block text-sm font-medium text-gold/80">
+          Tài khoản liên lạc <span class="text-red-400">*</span>
+        </label>
+        <input type="text" id="contact-account" name="contactAccount" required
+               placeholder="Vui lòng chọn phương thức nhận kết quả trước"
+               class="form-input w-full rounded-xl px-4 py-3 text-sm" />
+        <p class="error-msg text-red-400 text-xs mt-1 hidden"></p>
+      </div>
+
+      <!-- ── Submit Button ──────────────────────────────── -->
+      <div class="pt-4">
+        <button type="submit" id="submit-btn"
+                class="btn-glow w-full bg-gradient-to-r from-gold-dark via-gold to-gold-light text-purple-950 font-heading font-bold text-lg py-4 rounded-2xl
+                       hover:shadow-[0_0_30px_rgba(212,175,55,0.3)] transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
+          <span class="relative z-10 flex items-center justify-center gap-2">
+            Tiếp tục
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </form>
+  </main>
+
+  <!-- ══════════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════════ -->
+  <footer class="text-center text-xs text-gold/30 py-6 px-4">
+    © 2024 Harry Cuteer · Tarot & Tâm linh
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════
+       JAVASCRIPT
+       ══════════════════════════════════════════════════════ -->
+  <script>
+    // ── Package data ───────────────────────────────────────
+    const PACKAGES = {
+      'anh-trang': {
+        name: 'Ánh Trăng',
+        emoji: '🌙',
+        price: 99000,
+        priceDisplay: '99,000đ',
+        features: ['Trải bài 3 lá', '1 vấn đề', 'Trả kết quả trong 24h'],
+      },
+      'ngoi-sao': {
+        name: 'Ngôi Sao',
+        emoji: '⭐',
+        price: 199000,
+        priceDisplay: '199,000đ',
+        features: ['Trải bài Celtic Cross 10 lá', '1-2 vấn đề', 'Trả kết quả trong 12h', 'Tư vấn chi tiết'],
+      },
+      'than-bi': {
+        name: 'Thần Bí',
+        emoji: '🔮',
+        price: 399000,
+        priceDisplay: '399,000đ',
+        features: ['Không giới hạn câu hỏi', 'Trải bài tùy chọn', 'Trả kết quả trong 6h', 'Tư vấn sâu + Follow-up'],
+      },
+    };
+
+    // ── Contact method → placeholder mapping ──────────────
+    const CONTACT_PLACEHOLDERS = {
+      Zalo: 'Nhập SĐT Zalo',
+      Telegram: 'Nhập username Telegram (VD: @username)',
+      Instagram: 'Nhập username Instagram (VD: @username)',
+      'Facebook Messenger': 'Nhập tên Facebook hoặc link Messenger',
+    };
+
+    // ── DOM references ────────────────────────────────────
+    const form             = document.getElementById('booking-form');
+    const contactMethod    = document.getElementById('contact-method');
+    const contactAccount   = document.getElementById('contact-account');
+    const pkgEmoji         = document.getElementById('pkg-emoji');
+    const pkgName          = document.getElementById('pkg-name');
+    const pkgPrice         = document.getElementById('pkg-price');
+    const pkgFeatures      = document.getElementById('pkg-features');
+
+    // ── Read selected package from URL params ─────────────
+    const urlParams  = new URLSearchParams(window.location.search);
+    const packageKey = urlParams.get('package') || 'anh-trang';
+    const selectedPkg = PACKAGES[packageKey] || PACKAGES['anh-trang'];
+
+    /**
+     * Populate the package summary banner with selected package info.
+     */
+    function populatePackageBanner() {
+      pkgEmoji.textContent    = selectedPkg.emoji;
+      pkgName.textContent     = selectedPkg.name;
+      pkgPrice.textContent    = selectedPkg.priceDisplay;
+      pkgFeatures.innerHTML   = selectedPkg.features
+        .map(f => `
+          <li class="flex items-start gap-2">
+            <svg class="w-4 h-4 text-gold flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+            </svg>
+            <span>${f}</span>
+          </li>`)
+        .join('');
+    }
+    populatePackageBanner();
+
+    // ── Dynamic contact account placeholder ───────────────
+    contactMethod.addEventListener('change', () => {
+      const method = contactMethod.value;
+      contactAccount.placeholder = CONTACT_PLACEHOLDERS[method] || 'Nhập thông tin liên lạc';
+      contactAccount.value = '';
+      clearError(contactAccount);
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // VALIDATION
+    // ═══════════════════════════════════════════════════════
+
+    /**
+     * Show an error message below a field and apply error styles.
+     */
+    function showError(input, message) {
+      input.classList.add('input-error');
+      const errorEl = input.closest('.space-y-1\\.5, fieldset')?.querySelector('.error-msg');
+      if (errorEl) {
+        errorEl.textContent = message;
+        errorEl.classList.remove('hidden');
+      }
+    }
+
+    /**
+     * Clear error state from a field.
+     */
+    function clearError(input) {
+      input.classList.remove('input-error');
+      const errorEl = input.closest('.space-y-1\\.5, fieldset')?.querySelector('.error-msg');
+      if (errorEl) {
+        errorEl.textContent = '';
+        errorEl.classList.add('hidden');
+      }
+    }
+
+    /**
+     * Validate Vietnamese phone number: starts with 0, exactly 10 digits.
+     */
+    function isValidVNPhone(phone) {
+      return /^0\d{9}$/.test(phone.trim());
+    }
+
+    /**
+     * Run full form validation. Returns true if valid.
+     */
+    function validateForm() {
+      let isValid = true;
+      const firstInvalid = []; // track first invalid for scrolling
+
+      // ── Full name ────────────────────────────────
+      const fullname = document.getElementById('fullname');
+      clearError(fullname);
+      if (!fullname.value.trim()) {
+        showError(fullname, 'Vui lòng nhập họ và tên.');
+        isValid = false;
+        firstInvalid.push(fullname);
+      }
+
+      // ── Phone ────────────────────────────────────
+      const phone = document.getElementById('phone');
+      clearError(phone);
+      if (!phone.value.trim()) {
+        showError(phone, 'Vui lòng nhập số điện thoại.');
+        isValid = false;
+        firstInvalid.push(phone);
+      } else if (!isValidVNPhone(phone.value)) {
+        showError(phone, 'Số điện thoại không hợp lệ. Vui lòng nhập 10 chữ số, bắt đầu bằng 0.');
+        isValid = false;
+        firstInvalid.push(phone);
+      }
+
+      // ── Date of birth ───────────────────────────
+      const dob = document.getElementById('dob');
+      clearError(dob);
+      if (!dob.value) {
+        showError(dob, 'Vui lòng chọn ngày sinh.');
+        isValid = false;
+        firstInvalid.push(dob);
+      }
+
+      // ── Gender ───────────────────────────────────
+      const genderGroup = document.getElementById('gender-group');
+      const genderFieldset = genderGroup.closest('fieldset');
+      const genderError = genderFieldset?.querySelector('.error-msg');
+      if (genderError) {
+        genderError.textContent = '';
+        genderError.classList.add('hidden');
+      }
+      const selectedGender = document.querySelector('input[name="gender"]:checked');
+      if (!selectedGender) {
+        if (genderError) {
+          genderError.textContent = 'Vui lòng chọn giới tính.';
+          genderError.classList.remove('hidden');
+        }
+        isValid = false;
+        firstInvalid.push(genderGroup);
+      }
+
+      // ── Topic ────────────────────────────────────
+      const topic = document.getElementById('topic');
+      clearError(topic);
+      if (!topic.value.trim()) {
+        showError(topic, 'Vui lòng nhập vấn đề cần tư vấn.');
+        isValid = false;
+        firstInvalid.push(topic);
+      }
+
+      // ── Contact method ───────────────────────────
+      clearError(contactMethod);
+      if (!contactMethod.value) {
+        showError(contactMethod, 'Vui lòng chọn phương thức nhận kết quả.');
+        isValid = false;
+        firstInvalid.push(contactMethod);
+      }
+
+      // ── Contact account ──────────────────────────
+      clearError(contactAccount);
+      if (!contactAccount.value.trim()) {
+        showError(contactAccount, 'Vui lòng nhập tài khoản liên lạc.');
+        isValid = false;
+        firstInvalid.push(contactAccount);
+      }
+
+      // Scroll to first invalid field
+      if (firstInvalid.length > 0) {
+        firstInvalid[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+
+      return isValid;
+    }
+
+    // ── Clear error on input/change ───────────────────────
+    document.querySelectorAll('.form-input').forEach(input => {
+      const events = input.tagName === 'SELECT' ? ['change'] : ['input'];
+      events.forEach(evt => {
+        input.addEventListener(evt, () => clearError(input));
+      });
+    });
+
+    // Clear gender error when a radio is selected
+    document.querySelectorAll('input[name="gender"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        const genderFieldset = document.getElementById('gender-group').closest('fieldset');
+        const genderError = genderFieldset?.querySelector('.error-msg');
+        if (genderError) {
+          genderError.textContent = '';
+          genderError.classList.add('hidden');
+        }
+      });
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // FORM SUBMISSION
+    // ═══════════════════════════════════════════════════════
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      if (!validateForm()) return;
+
+      // Gather form data
+      const formData = {
+        fullname:       document.getElementById('fullname').value.trim(),
+        phone:          document.getElementById('phone').value.trim(),
+        dob:            document.getElementById('dob').value,
+        gender:         document.querySelector('input[name="gender"]:checked').value,
+        topic:          document.getElementById('topic').value.trim(),
+        detail:         document.getElementById('detail').value.trim(),
+        contactMethod:  contactMethod.value,
+        contactAccount: contactAccount.value.trim(),
+      };
+
+      // Save to sessionStorage
+      const bookingData = {
+        package: {
+          key: packageKey,
+          ...selectedPkg,
+        },
+        form: formData,
+        timestamp: new Date().toISOString(),
+      };
+
+      sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
+
+      // Navigate to overview page
+      window.location.href = 'overview.html';
+    });
+
+    // ═══════════════════════════════════════════════════════
+    // DECORATIVE SPARKLES
+    // ═══════════════════════════════════════════════════════
+    (function createSparkles() {
+      const count = 12;
+      for (let i = 0; i < count; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.classList.add('sparkle');
+        sparkle.style.left            = `${Math.random() * 100}%`;
+        sparkle.style.top             = `${Math.random() * 100}%`;
+        sparkle.style.animationDelay  = `${Math.random() * 6}s`;
+        sparkle.style.animationDuration = `${4 + Math.random() * 4}s`;
+        document.body.appendChild(sparkle);
+      }
+    })();
+
+    // ── Only allow digits in phone field ──────────────────
+    document.getElementById('phone').addEventListener('input', function () {
+      this.value = this.value.replace(/\D/g, '');
+    });
+  </script>
+</body>
+</html>
